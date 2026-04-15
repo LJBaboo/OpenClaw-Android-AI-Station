@@ -180,7 +180,7 @@ Then run:
 
 ```bash
 engine
-# or
+# then
 chat
 ```
 
