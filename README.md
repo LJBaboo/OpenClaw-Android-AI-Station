@@ -1,14 +1,24 @@
-# 📱 Linux-on-Phone AI Agent Engine
+# 📱 OpenClaw Android AI Station
 
-A lightweight, unconventional setup that turns an old Samsung phone into a Linux-powered AI automation hub — accessible remotely and capable of executing real-world tasks.
+> A portable, low-cost AI workstation powered by a Samsung phone, running a full Linux environment and AI agent engine via Termux.
+
+This project combines a **Samsung DeX-powered mobile desktop**, a **Termux-based Linux environment**, and the **OpenClaw AI agent framework** to create a fully functional, remotely accessible AI automation system.
+
+It turns an old phone into a **self-hosted AI engine** capable of executing real-world tasks like messaging, scheduling, and automation.
 
 ---
 
 ## 🚀 Overview
 
-This project uses a Samsung S-series phone running Samsung DeX as a desktop environment, combined with Termux to host a Linux environment. A remote PC connects via SSH to develop and control an AI agent system that can interact with external services (messages, calendar, etc.).
+This setup uses:
 
-The result: a portable, low-cost “AI engine” running entirely off a phone.
+* A Samsung S-series phone as the core hardware
+* Samsung DeX for a desktop-like experience
+* Termux to run a Linux environment
+* SSH to connect from a PC
+* OpenClaw API to power an AI agent
+
+The result is a **portable AI server** that you can control locally or remotely.
 
 ---
 
@@ -25,13 +35,13 @@ The result: a portable, low-cost “AI engine” running entirely off a phone.
 [ Termux ]
       │
       ▼
-[ Linux Environment ]
+[ Ubuntu (proot-distro) ]
       │
       ▼
-[ AI Agent Engine (OpenClawd API) ]
+[ OpenClaw AI Engine ]
       │
       ▼
-[ External Actions (Messaging, Calendar, etc.) ]
+[ External Actions (Messages, Calendar, Automation) ]
 ```
 
 ---
@@ -39,93 +49,232 @@ The result: a portable, low-cost “AI engine” running entirely off a phone.
 ## 🧰 Tech Stack
 
 * Samsung DeX (desktop environment)
-* Termux (package manager + Linux layer)
-* Linux (running inside Termux)
-* SSH (remote access from Windows PowerShell)
-* OpenClawd API (AI agent integration)
+* Termux (Linux compatibility layer)
+* Ubuntu (via proot-distro)
+* SSH (remote access)
+* Node.js (runtime)
+* OpenClaw (AI agent framework)
+* Anthropic API (Claude models)
 
 ---
 
-## ⚙️ Setup Process
+## 🛠 Prerequisites
 
-### 1. Hardware Setup
+* **Android Device:** Samsung S-series recommended (8GB+ RAM ideal)
+* **Monitor + peripherals** (for DeX)
+* **Termux:** Install via F-Droid (Play Store version is outdated)
+* **Anthropic API Key:** https://console.anthropic.com/
 
-* Connect a Samsung S-series phone to a monitor
-* Enable Samsung DeX for desktop experience
+---
 
-### 2. Install Termux
+## 📥 Installation Guide
 
-* Install Termux on the phone
-* Update packages:
+### 1. Setup Termux & Linux Environment
 
-  ```bash
-  pkg update && pkg upgrade
-  ```
+```bash
+pkg update && pkg upgrade -y
+pkg install proot-distro openssh -y
+proot-distro install ubuntu
+proot-distro login ubuntu
+```
 
-### 3. Install Linux Environment
+---
 
-* Use a Linux distro inside Termux (e.g., Ubuntu via proot)
-* Set up basic development tools
+### 2. Install Dependencies (Inside Ubuntu)
 
-### 4. Enable SSH Access
+```bash
+# Install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt update && apt install -y nodejs git nano htop
 
-* Install and start an SSH server in Termux
-* Connect from your PC using:
+# Clone OpenClaw
+git clone https://github.com/v-zhivkov/OpenClaw.git
+cd OpenClaw
+npm install
+```
 
-  ```powershell
-  ssh user@phone_ip
-  ```
+---
 
-### 5. Build the AI Engine
+### 3. Configure API Key
 
-* Integrate OpenClawd API
-* Create a chat interface for interacting with the agent
-* Implement command execution logic
+```bash
+nano .env
+```
+
+Add:
+
+```
+ANTHROPIC_API_KEY=your_api_key_here
+```
+
+Save with:
+
+* `CTRL + O` → Enter
+* `CTRL + X`
+
+---
+
+## 🚀 The "One-Word" Workflow (Aliases)
+
+Edit your bash config:
+
+```bash
+nano ~/.bashrc
+```
+
+Add:
+
+```bash
+# Start AI Engine (with Android network fix)
+alias engine='cd ~/OpenClaw && OPENCLAW_DISCOVERY_BACKEND=dummy ./openclaw.mjs gateway --force'
+
+# Launch Chat UI
+alias chat='cd ~/OpenClaw && ./openclaw.mjs tui'
+
+# System Monitor
+alias monitor='htop'
+```
+
+Apply changes:
+
+```bash
+source ~/.bashrc
+```
+
+---
+
+## 🏃 Running the AI System
+
+### Local (on Phone)
+
+**Terminal 1:**
+
+```bash
+engine
+```
+
+**Terminal 2:**
+
+```bash
+chat
+```
+
+---
+
+### Remote Access (PC → Phone)
+
+**On Phone (Termux):**
+
+```bash
+sshd
+```
+
+**On PC (PowerShell):**
+
+```powershell
+ssh <user>@<phone_ip> -p 8022
+proot-distro login ubuntu
+```
+
+Then run:
+
+```bash
+engine
+# or
+chat
+```
 
 ---
 
 ## 🤖 Features
 
-* Remote AI-controlled environment
-* Execute commands through natural language
-* Automate tasks like:
+* AI-powered command execution
+* Chat-based interface (TUI)
+* Remote control via SSH
+* Automation capabilities:
 
-  * Sending messages
-  * Reading notifications/messages
-  * Managing calendar events
-* Persistent “agent” environment running on mobile hardware
-
----
-
-## 💡 Why This Is Cool
-
-* Reuses old hardware (eco-friendly ♻️)
-* Fully portable AI server
-* Cheap alternative to cloud-based agents
-* Hackable and customizable Linux environment
+  * Messaging
+  * Reading notifications
+  * Calendar management
+* Persistent agent running on mobile hardware
 
 ---
 
-## ⚠️ Notes
+## 🔧 Troubleshooting & Tips
 
-* Performance depends on the phone’s hardware
-* Background execution limits may apply depending on Android version
-* Requires network configuration for stable SSH access
+### ⚠️ "System Error 13" Fix
+
+Android blocks certain local network discovery features.
+
+This project solves it using:
+
+```bash
+OPENCLAW_DISCOVERY_BACKEND=dummy
+```
+
+This is **required** for the engine and chat interface to communicate properly.
+
+---
+
+### 🧠 Memory Management
+
+* Use:
+
+  ```bash
+  monitor
+  ```
+* Claude models are resource-heavy
+* Restart engine if performance drops
+
+---
+
+### 🔑 API Errors
+
+* **401 / 403 errors** = likely no credits
+* Check: https://console.anthropic.com/
+
+---
+
+## 💡 Why This Project Matters
+
+* ♻️ Reuses old hardware
+* 💸 Avoids expensive cloud setups
+* 🧳 Fully portable AI workstation
+* 🔓 Highly customizable Linux environment
+* 🤖 Brings AI agents closer to personal devices
 
 ---
 
 ## 🔮 Future Improvements
 
-* Add a web-based UI for the agent
-* Improve automation integrations (APIs, webhooks)
-* Optimize resource usage
-* Add security layers (authentication, encryption improvements)
+* Web-based interface
+* Better automation integrations (APIs, webhooks)
+* Persistent background services
+* Enhanced security (auth layers, encryption)
+* Multi-agent workflows
 
 ---
 
+## 📝 License
+
+This repository is a configuration and setup guide.
+
+* OpenClaw belongs to its original authors: https://github.com/v-zhivkov/OpenClaw
+* This guide is open for personal and educational use
+
+---
 
 ## 🙌 Acknowledgements
 
 * Termux community
 * Samsung DeX ecosystem
-* OpenClawd API
+* OpenClaw contributors
+* Anthropic (Claude API)
+
+---
+
+## ⚡ Final Notes
+
+This is not just a project — it’s a proof-of-concept that **powerful AI systems don’t need expensive infrastructure**.
+
+A phone, a bit of Linux, and some creativity can go a long way.
