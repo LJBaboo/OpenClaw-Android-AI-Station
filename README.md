@@ -191,12 +191,40 @@ chat
 * AI-powered command execution
 * Chat-based interface (TUI)
 * Remote control via SSH
-* Automation capabilities:
-
-  * Messaging
-  * Reading notifications
-  * Calendar management
 * Persistent agent running on mobile hardware
+
+---
+* **OpenClaw – Core Capabilities (No Plugins)**
+
+* Run terminal commands and scripts
+
+* Execute Python code
+
+* Create, edit, and refactor code
+
+* Read, write, and manage files and folders
+
+* Generate and modify documents
+
+* Search the web and fetch page data
+
+* Control a browser (navigate, click, screenshot)
+
+* Break tasks into steps and complete them autonomously
+
+* Run multi-step workflows
+
+* Spawn and manage sub-agents
+
+* Schedule and run automated jobs
+
+* Execute background processes
+
+* Send messages and return structured outputs
+
+* Interact with user interfaces and display results
+
+* Generate images, audio, and other media
 
 ---
 
