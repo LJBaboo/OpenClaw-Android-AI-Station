@@ -123,11 +123,6 @@ The result: a portable, low-cost “AI engine” running entirely off a phone.
 
 ---
 
-## 📄 License
-
-MIT License (or your preferred license)
-
----
 
 ## 🙌 Acknowledgements
 
